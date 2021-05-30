@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Blazor.Markdown.Core\Blazor.Markdown.Core.csproj" />
     <ProjectReference Include="..\Client\Blazor.Markdown.Client.csproj" />
+    <ProjectReference Include="..\Core\Blazor.Markdown.Core.csproj" />
     <ProjectReference Include="..\Shared\Blazor.Markdown.Shared.csproj" />
   </ItemGroup>
 
