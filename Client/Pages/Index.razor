@@ -1,0 +1,43 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+<button type="button" @onclick="this.QuerySettings">Query Settings</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Connection String</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (object item in this.Settings)
+        {
+            <tr>
+                <td>Test</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@using Blazor.Markdown.Shared.Model.Options
+
+@inject HttpClient Client
+
+@code {
+    public List<object> Settings = new List<object>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.Client.PostAsJsonAsync("api/settings/add", new SettingsCreationOptions());
+    }
+
+    public async Task QuerySettings()
+    {
+        this.Settings = await this.Client.GetFromJsonAsync<List<object>>("api/settings/list");
+    }
+}
