@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Blazor.Markdown.Core.Mediator.Handler
 {
-    public class SettingsQueryHandler : IRequestHandler<SettingsQueryRequest, SettingsQueryReturn>
+    public class SettingsQueryHandler : IRequestHandler<SettingsQueryRequest, SettingsQueryResponse>
     {
         public readonly SettingsRepository SettingsRepository;
 
@@ -20,11 +20,11 @@ namespace Blazor.Markdown.Core.Mediator.Handler
             this.SettingsRepository = settingsRepository;
         }
 
-        public async Task<SettingsQueryReturn> Handle(SettingsQueryRequest request, CancellationToken cancellationToken)
+        public async Task<SettingsQueryResponse> Handle(SettingsQueryRequest request, CancellationToken cancellationToken)
         {
             List<Settings> _settings = await this.SettingsRepository.ListAll();
 
-            return new SettingsQueryReturn()
+            return new SettingsQueryResponse()
             {
                 Settings = _settings.Select(a => new SettingsModel()
                 {

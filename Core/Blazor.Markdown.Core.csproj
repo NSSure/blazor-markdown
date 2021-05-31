@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="MongoDB.Bson" Version="2.12.3" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.3" />
   </ItemGroup>

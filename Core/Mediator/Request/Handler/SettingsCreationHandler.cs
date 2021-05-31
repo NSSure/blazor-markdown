@@ -1,14 +1,14 @@
 ﻿using Blazor.Markdown.Core.DAL.Entity;
 using Blazor.Markdown.Core.DAL.Repository;
 using Blazor.Markdown.Core.Mediator.Request;
-using Blazor.Markdown.Shared.Model.Returns;
+using Blazor.Markdown.Shared.Model.Response;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Blazor.Markdown.Core.Mediator.Handler
 {
-    public class SettingsCreationHandler : IRequestHandler<SettingsCreationRequest, SettingsCreationReturn>
+    public class SettingsCreationHandler : IRequestHandler<SettingsCreationRequest, SettingsCreationResponse>
     {
         public readonly SettingsRepository SettingsRepository;
 
@@ -17,7 +17,7 @@ namespace Blazor.Markdown.Core.Mediator.Handler
             this.SettingsRepository = settingsRepository;
         }
 
-        public async Task<SettingsCreationReturn> Handle(SettingsCreationRequest request, CancellationToken cancellationToken)
+        public async Task<SettingsCreationResponse> Handle(SettingsCreationRequest request, CancellationToken cancellationToken)
         {
             Settings _settings = new Settings()
             {
@@ -26,7 +26,7 @@ namespace Blazor.Markdown.Core.Mediator.Handler
 
             await this.SettingsRepository.AddAsync(_settings);
 
-            return new SettingsCreationReturn()
+            return new SettingsCreationResponse()
             {
                 Id = _settings.Id
             };

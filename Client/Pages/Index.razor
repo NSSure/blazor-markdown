@@ -1,12 +1,18 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="row">
+    <div class="col-6">
+        <textarea class="form-control" @onchange="@OnMarkdownSourceChange"></textarea>
+    </div>
+    <div class="col-6">
+        <div class="markdown">
+            @this.CompiledMarkdown
+        </div>
+    </div>
+</div>
 
 <button type="button" @onclick="this.QuerySettings">Query Settings</button>
+<button type="button" @onclick="this.AddSettings">Add Settings</button>
 
 <table class="table">
     <thead>
@@ -31,7 +37,14 @@ Welcome to your new app.
 @code {
     public List<object> Settings = new List<object>();
 
+    public MarkupString CompiledMarkdown { get; set; }
+
     protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    public async Task AddSettings()
     {
         await this.Client.PostAsJsonAsync("api/settings/add", new SettingsCreationOptions());
     }
@@ -39,5 +52,34 @@ Welcome to your new app.
     public async Task QuerySettings()
     {
         this.Settings = await this.Client.GetFromJsonAsync<List<object>>("api/settings/list");
+    }
+
+    public void OnMarkdownSourceChange(ChangeEventArgs args)
+    {
+        string _compiled = string.Empty;
+
+        foreach (string line in args.Value.ToString().Split('\n'))
+        {
+            Console.WriteLine(line);
+
+            // Remove any new line and return characters from the line.
+            string _cleaned = line.Replace("\n", "").Replace("\r", "");
+            string[] _components = _cleaned.Split(" ");
+
+            string _converted = string.Empty;
+
+            if (_components.Length > 0)
+            {
+                _converted += $"<h1>{string.Join(" ", _components, 1, _components.Length - 1)}</h1>";
+            }
+            else
+            {
+                _converted += line;
+            }
+
+            _compiled += $"{_converted}{Environment.NewLine}";
+        }
+
+        this.CompiledMarkdown = new MarkupString(_compiled);
     }
 }

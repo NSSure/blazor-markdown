@@ -2,7 +2,7 @@
 
 namespace Blazor.Markdown.Shared.Model.Returns
 {
-    public class SettingsQueryReturn
+    public class SettingsQueryResponse
     {
         public List<SettingsModel> Settings { get; set; }
     }

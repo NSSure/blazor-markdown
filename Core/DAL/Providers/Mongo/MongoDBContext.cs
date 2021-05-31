@@ -1,10 +1,5 @@
-﻿using Blazor.Markdown.Core.DAL.Entity;
-using Blazor.Markdown.Core.DAL.Mongo.Map;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
-using MongoDB.Bson.Serialization.IdGenerators;
+﻿using Blazor.Markdown.Core.DAL.Mongo.Map;
 using MongoDB.Driver;
-using System;
 
 namespace Blazor.Markdown.Core.DAL.Mongo
 {
@@ -40,16 +35,9 @@ namespace Blazor.Markdown.Core.DAL.Mongo
             }
         }
 
-        public NoteMap NoteMap { get; set; } = new NoteMap();
-
-        public SettingsMap SettingsMap { get; set; } = new SettingsMap();
-
-        public CollectionMap CollectionMap { get; set; } = new CollectionMap();
-
         public MongoDBContext()
         {
-            // For all IDs of type GUID ensure that the default guid generator is used.
-            //BsonSerializer.RegisterIdGenerator(typeof(Guid), CombGuidGenerator.Instance);
+
         }
     }
 }

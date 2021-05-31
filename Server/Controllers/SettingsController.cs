@@ -2,6 +2,7 @@
 using Blazor.Markdown.Core.Mediator.Query;
 using Blazor.Markdown.Core.Mediator.Request;
 using Blazor.Markdown.Shared.Model.Options;
+using Blazor.Markdown.Shared.Model.Response;
 using Blazor.Markdown.Shared.Model.Returns;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace Blazor.Markdown.Server.Controllers
         {
             try
             {
-                SettingsCreationReturn _rtn = await this.Mediator.Send(new SettingsCreationRequest(creationOptions));
+                SettingsCreationResponse _rtn = await this.Mediator.Send(new SettingsCreationRequest(creationOptions));
                 return StatusCode(200, true);
             }
             catch(Exception ex)
@@ -43,7 +44,7 @@ namespace Blazor.Markdown.Server.Controllers
         {
             try
             {
-                SettingsQueryReturn _rtn = await this.Mediator.Send(new SettingsQueryRequest());
+                SettingsQueryResponse _rtn = await this.Mediator.Send(new SettingsQueryRequest());
                 return StatusCode(200, _rtn.Settings);
             }
             catch (Exception ex)

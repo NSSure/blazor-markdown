@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Blazor.Markdown.Core.Mediator.Query
 {
-    public class SettingsQueryRequest : IRequest<SettingsQueryReturn>
+    public class SettingsQueryRequest : IRequest<SettingsQueryResponse>
     {
         
     }

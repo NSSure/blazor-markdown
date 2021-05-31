@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Blazor.Markdown.Shared.Model.Returns
+namespace Blazor.Markdown.Shared.Model.Response
 {
-    public class SettingsCreationReturn
+    public class SettingsCreationResponse
     {
         /// <summary>
         /// The ID of the settings entity.
