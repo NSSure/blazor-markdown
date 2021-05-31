@@ -1,18 +1,16 @@
 ﻿using Blazor.Markdown.Core.DAL.Mongo;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 {
     public interface IRegisterIndexes
     {
-        public Task Execute();
+        public void Execute();
     }
 
     public class IndexConfig<TDocument>
@@ -113,8 +111,8 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
             {
                 this.PendingIndexes[_propertyName].Add(new IndexConfig<TDocument>()
                 {
-                    Type = IndexType.Ascending,
-                    Definition = this._Builder.Ascending(indexExpression)
+                    Type = IndexType.Descending,
+                    Definition = this._Builder.Descending(indexExpression)
                 });
             }
         }
@@ -141,7 +139,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 
         }
 
-        public async Task Execute()
+        public void Execute()
         {
             MongoDBContext _context = new MongoDBContext();
 
@@ -149,7 +147,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 
             if (_collection != null)
             {
-                await _collection.Indexes.List().ForEachAsync(registeredIndex =>
+                _collection.Indexes.List().ForEachAsync(registeredIndex =>
                 {
                     this.ExistingIndexes.Add((Index)MongoDB.Bson.Serialization.BsonSerializer.Deserialize(registeredIndex, typeof(Index)));
                 });
@@ -191,7 +189,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
                 }
             }
 
-            await _collection.Indexes.CreateManyAsync(_builder.GetIndexModels());
+            _collection.Indexes.CreateMany(_builder.GetIndexModels());
 
             foreach (Index droppedIndex in this.ExistingIndexes)
             {
@@ -201,7 +199,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
                     continue;
                 }
 
-                await _collection.Indexes.DropOneAsync(droppedIndex.name);
+                _collection.Indexes.DropOne(droppedIndex.name);
             }
         }
 

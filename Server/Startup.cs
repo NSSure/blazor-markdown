@@ -1,4 +1,5 @@
 using Blazor.Markdown.Core;
+using Blazor.Markdown.Core.DAL.Entity;
 using Blazor.Markdown.Core.DAL.Mongo;
 using Blazor.Markdown.Core.DAL.Providers.Mongo;
 using Blazor.Markdown.Core.DAL.Repository;
@@ -10,9 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using static Blazor.Markdown.Server.Program;
 
 namespace Blazor.Markdown.Server
 {
@@ -21,51 +19,42 @@ namespace Blazor.Markdown.Server
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            MarkdownApp.DBConfiguration = Configuration.GetSection("DBConfiguration") as DBConfiguration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public async void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
 
             services.AddMediatR(typeof(MarkdownApp));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizeActionBehavior<,>));
 
-            services.AddSingleton(typeof(MongoDBContext));
-            services.AddTransient(typeof(SettingsRepository));
-
-            services.Configure<ConfigureMongoDBSeedingOptions>(options =>
+            services.AddMongoDB(typeof(MongoDBContext), (options) =>
             {
-
+                // Will ensure the database is created by excuting the mapping and index registrations.
+                options.EnsureCreated = true;
             });
 
-            List<Type> _registerMapTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => typeof(IRegisterMap).IsAssignableFrom(x) && !x.ContainsGenericParameters && !x.IsInterface).ToList();
+            services.AddTransient(typeof(SettingsRepository));
 
-            foreach (Type registerMapType in _registerMapTypes)
+            MongoDBContext _context = new MongoDBContext();
+
+            _context.Role.InsertOne(new Role()
             {
-                var _registerMapInstance = (IRegisterMap)Activator.CreateInstance(registerMapType);
+                Id = Guid.Parse("AE2AB2DC-7CB9-4065-AB31-12613CE08F96"),
+                Name = "Administrator",
+                Key = "System.Admin"
+            });
 
-                if (_registerMapInstance != null)
-                {
-                    _registerMapInstance.Execute();
-                }
-            }
-
-            List<Type> _registerIndexesTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => typeof(IRegisterIndexes).IsAssignableFrom(x) && !x.ContainsGenericParameters && !x.IsInterface).ToList();
-
-            foreach (Type registerIndexesType in _registerIndexesTypes)
+            _context.Role.InsertOne(new Role()
             {
-                var _registerIndexesInstance = (IRegisterIndexes)Activator.CreateInstance(registerIndexesType);
-
-                if (_registerIndexesInstance != null)
-                {
-                    await _registerIndexesInstance.Execute();
-                }
-            }
+                Id = Guid.Parse("536DDEB8-C050-45D9-94B7-2A365D88EB52"),
+                Name = "User",
+                Key = "System.User"
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

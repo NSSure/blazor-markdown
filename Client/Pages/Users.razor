@@ -1,0 +1,34 @@
+﻿@inject HttpClient Client
+
+<h3>Users</h3>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Roles</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Blazor.Markdown.Shared.Model.UserModel existingUser in this.ExistingUsers)
+            {
+                <tr>
+                    <td>@existingUser.Name</td>
+                    <td>@existingUser.RoleIds</td>
+                    <td>@existingUser.ActionIds</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    public List<Blazor.Markdown.Shared.Model.UserModel> ExistingUsers = new List<Blazor.Markdown.Shared.Model.UserModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.ExistingUsers = await this.Client.GetFromJsonAsync<List<Blazor.Markdown.Shared.Model.UserModel>>("api/user/list");
+    }
+}

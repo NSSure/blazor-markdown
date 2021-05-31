@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core\Blazor.Markdown.Core.csproj" />
     <ProjectReference Include="..\Shared\Blazor.Markdown.Shared.csproj" />
   </ItemGroup>
 
