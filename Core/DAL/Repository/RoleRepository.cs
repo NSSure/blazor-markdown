@@ -6,9 +6,9 @@ using SureInjector.Enums;
 namespace Blazor.Markdown.Core.DAL.Repository
 {
     [Injection(RequestInjectionState.Transient)]
-    public class SettingsRepository : BaseRepository<Settings>
+    public class RoleRepository : BaseRepository<Role>
     {
-        public SettingsRepository(MongoDBContext context) : base(context)
+        public RoleRepository(MongoDBContext context) : base(context)
         {
 
         }

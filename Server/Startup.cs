@@ -1,8 +1,5 @@
 using Blazor.Markdown.Core;
-using Blazor.Markdown.Core.DAL.Entity;
 using Blazor.Markdown.Core.DAL.Mongo;
-using Blazor.Markdown.Core.DAL.Providers.Mongo;
-using Blazor.Markdown.Core.DAL.Repository;
 using Blazor.Markdown.Core.Mediator.Behavior;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -28,33 +25,18 @@ namespace Blazor.Markdown.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-
+            
             services.AddMediatR(typeof(MarkdownApp));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizeActionBehavior<,>));
 
-            services.AddMongoDB(typeof(MongoDBContext), (options) =>
+            services.AddMongoDB<MongoDBContext>(typeof(MongoDBContext), (options) =>
             {
                 // Will ensure the database is created by excuting the mapping and index registrations.
                 options.EnsureCreated = true;
             });
 
-            services.AddTransient(typeof(SettingsRepository));
-
-            MongoDBContext _context = new MongoDBContext();
-
-            _context.Role.InsertOne(new Role()
-            {
-                Id = Guid.Parse("AE2AB2DC-7CB9-4065-AB31-12613CE08F96"),
-                Name = "Administrator",
-                Key = "System.Admin"
-            });
-
-            _context.Role.InsertOne(new Role()
-            {
-                Id = Guid.Parse("536DDEB8-C050-45D9-94B7-2A365D88EB52"),
-                Name = "User",
-                Key = "System.User"
-            });
+            // Register repositories.
+            services.AddInjections();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

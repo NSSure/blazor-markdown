@@ -1,5 +1,6 @@
 ﻿using Blazor.Markdown.Core.DAL.Entity;
 using Blazor.Markdown.Core.DAL.Mongo.Map;
+using Blazor.Markdown.Core.DAL.Providers.Mongo;
 using MongoDB.Driver;
 
 namespace Blazor.Markdown.Core.DAL.Mongo
@@ -33,6 +34,14 @@ namespace Blazor.Markdown.Core.DAL.Mongo
             get
             {
                 return this.Client.GetDatabase("Markdown");
+            }
+        }
+
+        public IMongoCollection<Seed> Seed
+        {
+            get
+            {
+                return this.Database.GetCollection<Seed>(typeof(Seed).Name);
             }
         }
 

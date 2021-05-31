@@ -1,6 +1,5 @@
 ﻿using Blazor.Markdown.Core.DAL.Entity;
 using Blazor.Markdown.Core.Mediator.Query;
-using Blazor.Markdown.Core.Mediator.Request;
 using Blazor.Markdown.Shared.Model.Options;
 using Blazor.Markdown.Shared.Model.Returns;
 using MediatR;
@@ -22,7 +21,7 @@ namespace Blazor.Markdown.Server.Controllers
             this.Mediator = mediator;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("list")]
         public async Task<ActionResult<List<User>>> List([FromBody] UserQueryOptions queryOptions)
         {

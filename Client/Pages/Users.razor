@@ -1,6 +1,19 @@
-﻿@inject HttpClient Client
+﻿@page "/users"
+
+@using Blazor.Markdown.Shared.Model.Options
+
+@inject HttpClient Client
 
 <h3>Users</h3>
+
+<div class="mb-3">
+    <label for="txtAction" class="form-label">Action</label>
+    <input type="text" class="form-control" id="txtAction" @bind-value="this.QueryOptions.Action" />
+</div>
+
+<div class="mb-3">
+    <button type="button" @onclick="this.QueryUsers">Search</button>
+</div>
 
 <div class="table-responsive">
     <table class="table">
@@ -16,8 +29,7 @@
             {
                 <tr>
                     <td>@existingUser.Name</td>
-                    <td>@existingUser.RoleIds</td>
-                    <td>@existingUser.ActionIds</td>
+                    <td>@string.Join(',', existingUser.ActionIds)</td>
                 </tr>
             }
         </tbody>
@@ -25,10 +37,18 @@
 </div>
 
 @code {
+    public UserQueryOptions QueryOptions = new UserQueryOptions();
+
     public List<Blazor.Markdown.Shared.Model.UserModel> ExistingUsers = new List<Blazor.Markdown.Shared.Model.UserModel>();
 
     protected override async Task OnInitializedAsync()
     {
-        this.ExistingUsers = await this.Client.GetFromJsonAsync<List<Blazor.Markdown.Shared.Model.UserModel>>("api/user/list");
+        await this.QueryUsers();
+    }
+
+    protected async Task QueryUsers()
+    {
+        HttpResponseMessage _response = await this.Client.PostAsJsonAsync<UserQueryOptions>("api/user/list", this.QueryOptions);
+        this.ExistingUsers = await _response.Content.ReadFromJsonAsync<List<Blazor.Markdown.Shared.Model.UserModel>>();
     }
 }

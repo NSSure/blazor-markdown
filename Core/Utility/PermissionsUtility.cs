@@ -1,5 +1,4 @@
-﻿
-namespace Blazor.Markdown.Core.Utility
+﻿namespace Blazor.Markdown.Core.Utility
 {
     public static class PermissionsUtility
     {
@@ -9,12 +8,7 @@ namespace Blazor.Markdown.Core.Utility
         /// <returns></returns>
         public static bool HasAction(string action)
         {
-            if (MarkdownApp.CurrentActions.Contains(action))
-            {
-                return true;
-            }
-
-            return false;
+            return true;
         }
     }
 }

@@ -8,7 +8,6 @@ namespace Blazor.Markdown.Shared.Model
         public Guid Id { get; set; }
         public string Name { get; set; }
         public List<Guid> ActionIds { get; set; }
-        public List<Guid> RoleIds { get; set; }
         public DateTime DateAdded { get; set; }
         public DateTime DateLastUpdated { get; set; }
     }
