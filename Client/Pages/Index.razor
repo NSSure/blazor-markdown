@@ -1,17 +1,19 @@
 ﻿@page "/"
 
-<div class="row">
-    <div class="col-6">
-        <textarea class="form-control" @onchange="@OnMarkdownSourceChange"></textarea>
+<div class="d-flex h-100">
+    <div class="w-50 h-100">
+        <div class="h-100 border-right">
+            <textarea class="markdown-source h-100" @oninput="@OnMarkdownSourceChange" @bind="this.MarkdownSource"></textarea>
+        </div>
     </div>
-    <div class="col-6">
-        <div class="markdown">
+    <div class="w-50 h-100">
+        <div class="markdown-output h-100">
             @this.CompiledMarkdown
         </div>
     </div>
 </div>
 
-<button type="button" @onclick="this.QuerySettings">Query Settings</button>
+@*<button type="button" @onclick="this.QuerySettings">Query Settings</button>
 <button type="button" @onclick="this.AddSettings">Add Settings</button>
 
 <table class="table">
@@ -28,7 +30,7 @@
             </tr>
         }
     </tbody>
-</table>
+</table>*@
 
 @using Blazor.Markdown.Shared.Model.Options
 
@@ -37,11 +39,35 @@
 @code {
     public List<object> Settings = new List<object>();
 
+    public string MarkdownSource { get; set; } = @"
+        #Current Status
+
+        ## main system:  
+        - hot pacth upgrades are on [3.3.1](/Spyomic-Projects/Spyomic-Main/3.X/3.3.x/3.3.1)
+        - Next release is [3.4.X](/Spyomic-Projects/Spyomic-Main/3.X/3.4.X)
+
+        ##[Current Features](/Features)
+        - ###[Future features and Changes](/Features/Future-features-and-Changes)
+        ## [Main System Information](/Spyomic-Projects/Spyomic-Main)
+
+        Version listing
+        [3.2.0 Current version in development target date 11/8/2019](/Spyomic-Projects/Spyomic-Main/ChangeLogs/3.2.0)
+
+
+         [3.1.100.3 Current Stable Version](/Spyomic-Projects/Spyomic-Main/ChangeLogs/3.1.100.0)
+    ";
+
     public MarkupString CompiledMarkdown { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-
+        if (!string.IsNullOrEmpty(this.MarkdownSource))
+        {
+            this.OnMarkdownSourceChange(new ChangeEventArgs()
+            {
+                Value = this.MarkdownSource
+            });
+        }
     }
 
     public async Task AddSettings()
