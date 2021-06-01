@@ -29,10 +29,12 @@ namespace Blazor.Markdown.Server
             services.AddMediatR(typeof(MarkdownApp));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizeActionBehavior<,>));
 
+            // Database will automatically be created if there are any indexes to apply.
             services.AddMongoDB<MongoDBContext>(typeof(MongoDBContext), (options) =>
             {
                 // Will ensure the database is created by excuting the mapping and index registrations.
                 options.EnsureCreated = true;
+                options.DropDatabaseOnLoad = true;
             });
 
             // Register repositories.

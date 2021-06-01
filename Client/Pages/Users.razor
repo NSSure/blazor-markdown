@@ -12,28 +12,51 @@
 </div>
 
 <div class="mb-3">
-    <button type="button" @onclick="this.QueryUsers">Search</button>
+    <button type="button" class="btn btn-primary" @onclick="this.QueryUsers">Search</button>
 </div>
 
-<div class="table-responsive">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Roles</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (Blazor.Markdown.Shared.Model.UserModel existingUser in this.ExistingUsers)
-            {
+<div class="card shadow">
+    <div class="table-responsive">
+        <table class="table align-middle m-0">
+            <thead class="thead-light">
                 <tr>
-                    <td>@existingUser.Name</td>
-                    <td>@string.Join(',', existingUser.ActionIds)</td>
+                    <th>Name</th>
+                    <th>Roles</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (Blazor.Markdown.Shared.Model.UserModel existingUser in this.ExistingUsers)
+                {
+                    <tr>
+                        <td>@existingUser.Name</td>
+                        <td>
+                            @foreach (Guid roleId in existingUser.RoleIds)
+                            {
+                                <div class="role d-flex">
+                                    <div role="button" aria-label="Delete action" tabindex="0" class="text-danger mr-2">
+                                        <span class="oi oi-x" aria-hidden="true"></span>
+                                    </div>
+                                    <span>@roleId</span>
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            @foreach (Guid actionId in existingUser.ActionIds)
+                            {
+                                <div class="action d-flex">
+                                    <div role="button" aria-label="Delete action" tabindex="0" class="text-danger mr-2" @onclick="() => { this.RemoveAction(existingUser.Id, actionId); }">
+                                        <span class="oi oi-x" aria-hidden="true"></span>
+                                    </div>
+                                    <span>@actionId</span>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @code {
@@ -50,5 +73,16 @@
     {
         HttpResponseMessage _response = await this.Client.PostAsJsonAsync<UserQueryOptions>("api/user/list", this.QueryOptions);
         this.ExistingUsers = await _response.Content.ReadFromJsonAsync<List<Blazor.Markdown.Shared.Model.UserModel>>();
+    }
+
+    protected async Task RemoveAction(Guid userId, Guid actionId)
+    {
+        UserActionRemovalOptions _removalOptions = new UserActionRemovalOptions()
+        {
+            UserId = userId,
+            ActionId = actionId
+        };
+
+        await this.Client.PostAsJsonAsync<UserActionRemovalOptions>("api/action/user/remove", _removalOptions);
     }
 }

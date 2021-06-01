@@ -26,16 +26,20 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
             // Inject to builder through DI container?
             MongoDBContext _context = (MongoDBContext)Activator.CreateInstance(typeof(TContext));
 
-            if (this.Options.EnsureCreated)
+            IMongoDatabase _existingDatabase = _context.Client.GetDatabase(typeof(MongoDBContext).Name);
+
+            if (_existingDatabase != null)
             {
-                // Indexes are idempotent so should this just run every time the application starts?
-                this.ExecuteMapRegistrations();
-                this.ExecuteIndexRegistrations();
-
-                IMongoDatabase _existingDatabase = _context.Client.GetDatabase(typeof(MongoDBContext).Name);
-
-                this.ExecuteSeedRegistrations();
+                if (this.Options.DropDatabaseOnLoad)
+                {
+                    _context.Client.DropDatabase(typeof(MongoDBContext).Name);
+                }
             }
+
+            // Indexes are idempotent so should this just run every time the application starts?
+            this.ExecuteMapRegistrations();
+            this.ExecuteIndexRegistrations();
+            this.ExecuteSeedRegistrations();
         }
 
         /// <summary>
@@ -87,13 +91,22 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 
                 if (_registerSeedInstance != null)
                 {
-                    _registerSeedInstance.Execute(_context);
-
-                    _context.Seed.InsertOne(new Seed()
+                    // TODO: Grab full seeding table instead of query individually.
+                    if (_context.Seed.CountDocuments(x => x.Name == registerSeedType.FullName) == 0)
                     {
-                        Name = registerSeedType.FullName,
-                        DateAdded = DateTime.UtcNow
-                    });
+                        _registerSeedInstance.Execute(_context);
+
+                        _context.Seed.InsertOne(new Seed()
+                        {
+                            Name = registerSeedType.FullName,
+                            DateAdded = DateTime.UtcNow
+                        });
+                    }
+                    else
+                    {
+                        // Seed already executed continue to next iteration.
+                        continue;
+                    }
                 }
             }
         }

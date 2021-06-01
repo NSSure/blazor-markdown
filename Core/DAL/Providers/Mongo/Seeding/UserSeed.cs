@@ -12,6 +12,10 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
             context.User.InsertOne(new User()
             {
                 Name = "System Admin",
+                RoleIds = new List<Guid>()
+                {
+                    Constants.Permissions.Roles.SystemAdminId
+                },
                 ActionIds = new List<Guid>()
                 {
                     Constants.Permissions.Actions.Settings.AddId,
@@ -26,6 +30,10 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
             context.User.InsertOne(new User()
             {
                 Name = "John Doe",
+                RoleIds = new List<Guid>()
+                {
+                    Constants.Permissions.Roles.SystemUserId
+                },
                 ActionIds = new List<Guid>(),
                 DateAdded = DateTime.UtcNow,
                 DateLastUpdated = DateTime.UtcNow

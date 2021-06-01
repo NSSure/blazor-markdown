@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public class MongoDBOptions
     {
         public bool EnsureCreated { get; set; }
+        public bool DropDatabaseOnLoad { get; set; }
     }
 
     public static class MongoDBDependencyInjectionExtensions

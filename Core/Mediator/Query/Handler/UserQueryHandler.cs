@@ -48,6 +48,7 @@ namespace Blazor.Markdown.Core.Mediator.Handler
                 {
                     Id = a.Id,
                     Name = a.Name,
+                    RoleIds = a.RoleIds,
                     ActionIds = a.ActionIds,
                     DateAdded = a.DateAdded,
                     DateLastUpdated = a.DateLastUpdated

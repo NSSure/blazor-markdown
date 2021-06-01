@@ -10,17 +10,17 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
         {
             context.Role.InsertOne(new Role()
             {
-                Id = Guid.Parse("AE2AB2DC-7CB9-4065-AB31-12613CE08F96"),
+                Id = Constants.Permissions.Roles.SystemAdminId,
+                Key = Constants.Permissions.Roles.SystemAdmin,
                 Name = "Administrator",
-                Key = "System.Admin",
                 DateAdded = DateTime.UtcNow
             });
 
             context.Role.InsertOne(new Role()
             {
-                Id = Guid.Parse("536DDEB8-C050-45D9-94B7-2A365D88EB52"),
+                Id = Constants.Permissions.Roles.SystemUserId,
+                Key = Constants.Permissions.Roles.SystemUser,
                 Name = "User",
-                Key = "System.User",
                 DateAdded = DateTime.UtcNow
             });
         }
