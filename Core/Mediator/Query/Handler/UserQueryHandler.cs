@@ -48,6 +48,10 @@ namespace Blazor.Markdown.Core.Mediator.Handler
                 {
                     Id = a.Id,
                     Name = a.Name,
+                    Email = a.Email,
+                    Address = a.Address,
+                    Language = a.Language,
+                    IPAddress = a.IPAdress,
                     RoleIds = a.RoleIds,
                     ActionIds = a.ActionIds,
                     DateAdded = a.DateAdded,

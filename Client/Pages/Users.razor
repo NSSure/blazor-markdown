@@ -17,12 +17,16 @@
     </div>
 
     <div class="table-responsive">
-        <table>
-            <thead class="thead-light">
+        <table class="table table-striped table-sm m-0">
+            <thead class="bg-primary text-white font-weight-normal">
                 <tr>
                     <th>Name</th>
-                    <th>Roles</th>
-                    <th>Actions</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Lanuage</th>
+                    <th>IP Address</th>
+                    <th>Date Added</th>
+                    <th>Date Last Updated</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,28 +34,40 @@
                 {
                     <tr>
                         <td>@existingUser.Name</td>
-                        <td>
-                            @foreach (Guid roleId in existingUser.RoleIds)
+                        <td>@existingUser.Email</td>
+                        <td>@existingUser.Address</td>
+                        <td>@existingUser.Language</td>
+                        <td>@existingUser.IPAddress</td>
+                        <td>@existingUser.DateAdded</td>
+                        <td>@existingUser.DateLastUpdated</td>
+                        @*<td>
+                            @if (existingUser.RoleIds != null)
                             {
-                                <div class="role d-flex">
-                                    <div role="button" aria-label="Delete action" tabindex="0" class="text-danger mr-2">
-                                        <span class="oi oi-x" aria-hidden="true"></span>
+                                @foreach (Guid roleId in existingUser.RoleIds)
+                                {
+                                    <div class="role d-flex">
+                                        <div role="button" aria-label="Delete action" tabindex="0" class="text-danger mr-2">
+                                            <span class="oi oi-x" aria-hidden="true"></span>
+                                        </div>
+                                        <span>@roleId</span>
                                     </div>
-                                    <span>@roleId</span>
-                                </div>
+                                }
                             }
                         </td>
                         <td>
-                            @foreach (Guid actionId in existingUser.ActionIds)
+                            @if (existingUser.ActionIds != null)
                             {
-                                <div class="action d-flex">
-                                    <div role="button" aria-label="Delete action" tabindex="0" class="text-danger mr-2" @onclick="() => { this.RemoveAction(existingUser.Id, actionId); }">
-                                        <span class="oi oi-x" aria-hidden="true"></span>
+                                @foreach (Guid actionId in existingUser.ActionIds)
+                                {
+                                    <div class="action d-flex">
+                                        <div role="button" aria-label="Delete action" tabindex="0" class="text-danger mr-2" @onclick="() => { this.RemoveAction(existingUser.Id, actionId); }">
+                                            <span class="oi oi-x" aria-hidden="true"></span>
+                                        </div>
+                                        <span>@actionId</span>
                                     </div>
-                                    <span>@actionId</span>
-                                </div>
+                                }
                             }
-                        </td>
+                        </td>*@
                     </tr>
                 }
             </tbody>

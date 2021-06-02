@@ -10,6 +10,8 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 
     public abstract class RegisterSeed<TDocument> : IRegisterSeed
     {
+        public virtual string SeedFile => string.Empty;
+
         public RegisterSeed()
         {
 
