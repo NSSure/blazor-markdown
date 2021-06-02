@@ -10,7 +10,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 {
     public interface IRegisterIndexes
     {
-        public void Execute();
+        public void Execute<TContext>(TContext context) where TContext : MongoDBContext;
     }
 
     public class IndexConfig<TDocument>
@@ -59,26 +59,29 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
             }
 
             if (expression == null)
-                throw new ArgumentException(string.Format(
-                    "Expression '{0}' refers to a method, not a property.",
-                    propertyLambda.ToString()));
+            {
+                throw new ArgumentException(string.Format("Expression '{0}' refers to a method, not a property.", propertyLambda.ToString()));
+            }
 
             PropertyInfo propInfo = expression.Member as PropertyInfo;
-            if (propInfo == null)
-                throw new ArgumentException(string.Format(
-                    "Expression '{0}' refers to a field, not a property.",
-                    propertyLambda.ToString()));
 
-            if (type != propInfo.ReflectedType &&
-                !type.IsSubclassOf(propInfo.ReflectedType))
-                throw new ArgumentException(string.Format(
-                    "Expression '{0}' refers to a property that is not from type {1}.",
-                    propertyLambda.ToString(),
-                    type));
+            if (propInfo == null)
+            {
+                throw new ArgumentException(string.Format("Expression '{0}' refers to a field, not a property.", propertyLambda.ToString()));
+            }
+                
+            if (type != propInfo.ReflectedType && !type.IsSubclassOf(propInfo.ReflectedType))
+            {
+                throw new ArgumentException(string.Format("Expression '{0}' refers to a property that is not from type {1}.", propertyLambda.ToString(), type));
+            }
 
             return propInfo;
         }
 
+        /// <summary>
+        /// Registers a pending ascendin index for the collection document.
+        /// </summary>
+        /// <param name="indexExpression"></param>
         public void Ascending(Expression<Func<TDocument, object>> indexExpression)
         {
             string _propertyName = GetPropertyInfo(indexExpression).Name;
@@ -98,6 +101,10 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
             }
         }
 
+        /// <summary>
+        /// Registers a pending descending index for the collection document.
+        /// </summary>
+        /// <param name="indexExpression"></param>
         public void Descending(Expression<Func<TDocument, object>> indexExpression)
         {
             string _propertyName = GetPropertyInfo(indexExpression).Name;
@@ -139,9 +146,9 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 
         }
 
-        public void Execute()
+        public void Execute<TContext>(TContext context) where TContext : MongoDBContext
         {
-            MongoDBContext _context = new MongoDBContext();
+            TContext _context = Activator.CreateInstance<TContext>();
 
             var _collection = _context.Database.GetCollection<TDocument>(typeof(TDocument).Name);
 

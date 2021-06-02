@@ -6,7 +6,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
 {
     public class RoleSeed : RegisterSeed<Role>
     {
-        public override void Configure(MongoDBContext context)
+        public override void Configure(MarkdownDBContext context)
         {
             context.Role.InsertOne(new Role()
             {

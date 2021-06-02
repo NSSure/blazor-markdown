@@ -8,7 +8,7 @@ namespace Blazor.Markdown.Core.DAL.Repository
     [Injection(RequestInjectionState.Transient)]
     public class UserRepository : BaseRepository<User>
     {
-        public UserRepository(MongoDBContext context) : base(context)
+        public UserRepository(MarkdownDBContext context) : base(context)
         {
 
         }

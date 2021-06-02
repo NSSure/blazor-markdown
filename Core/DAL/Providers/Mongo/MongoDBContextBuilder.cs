@@ -7,9 +7,11 @@ using System.Linq;
 
 namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 {
-    public class MongoDBContextBuilder<TContext>
+    public class MongoDBContextBuilder<TContext> where TContext : MongoDBContext
     {
         public MongoDBOptions Options { get; set; }
+
+        public TContext Context { get; set; }
 
         public MongoDBContextBuilder()
         {
@@ -23,16 +25,15 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 
         public void Run()
         {
-            // Inject to builder through DI container?
-            MongoDBContext _context = (MongoDBContext)Activator.CreateInstance(typeof(TContext));
+            this.Context = Activator.CreateInstance<TContext>();
 
-            IMongoDatabase _existingDatabase = _context.Client.GetDatabase(typeof(MongoDBContext).Name);
+            IMongoDatabase _existingDatabase = this.Context.Client.GetDatabase(typeof(MarkdownDBContext).Name);
 
             if (_existingDatabase != null)
             {
                 if (this.Options.DropDatabaseOnLoad)
                 {
-                    _context.Client.DropDatabase(typeof(MongoDBContext).Name);
+                    this.Context.Client.DropDatabase(typeof(MarkdownDBContext).Name);
                 }
             }
 
@@ -55,7 +56,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 
                 if (_registerIndexesInstance != null)
                 {
-                    _registerIndexesInstance.Execute();
+                    _registerIndexesInstance.Execute(this.Context);
                 }
             }
         }
@@ -81,7 +82,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
         public void ExecuteSeedRegistrations()
         {
             // How to inject context into the constructor instead of creating an instance.
-            MongoDBContext _context = (MongoDBContext)Activator.CreateInstance(typeof(TContext));
+            MarkdownDBContext _context = (MarkdownDBContext)Activator.CreateInstance(typeof(TContext));
 
             List<Type> _registerSeedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => typeof(IRegisterSeed).IsAssignableFrom(x) && !x.ContainsGenericParameters && !x.IsInterface).ToList();
 

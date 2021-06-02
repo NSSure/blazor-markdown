@@ -7,7 +7,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
 {
     public class UserSeed : RegisterSeed<User>
     {
-        public override void Configure(MongoDBContext context)
+        public override void Configure(MarkdownDBContext context)
         {
             context.User.InsertOne(new User()
             {

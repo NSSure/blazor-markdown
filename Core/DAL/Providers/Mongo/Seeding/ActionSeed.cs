@@ -7,7 +7,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
 {
     public class ActionSeed : RegisterSeed<Action>
     {
-        public override void Configure(MongoDBContext context)
+        public override void Configure(MarkdownDBContext context)
         {
             context.Action.InsertOne(new Action()
             {

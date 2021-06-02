@@ -12,9 +12,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
     public static class MongoDBDependencyInjectionExtensions
     {
-        public static MongoDBContextBuilder<TContext> AddMongoDB<TContext>(this IServiceCollection services, Type contextType)
+        public static MongoDBContextBuilder<TContext> AddMongoDB<TContext>(this IServiceCollection services, Type contextType) where TContext : MongoDBContext
         {
-            if (contextType != typeof(MongoDBContext))
+            if (contextType != typeof(MarkdownDBContext))
             {
                 throw new Exception("The context type must either derive from or be the MongoDBContext class.");
             }
@@ -25,38 +25,26 @@ namespace Microsoft.Extensions.DependencyInjection
             return new MongoDBContextBuilder<TContext>();
         }
 
-        public static MongoDBContextBuilder<TContext> AddMongoDB<TContext>(this IServiceCollection services, Type contextType, Action<MongoDBOptions> configureOptions)
+        public static MongoDBContextBuilder<TContext> AddMongoDB<TContext>(this IServiceCollection services, Action<MongoDBOptions> configureOptions) where TContext : MongoDBContext
         {
-            if (contextType != typeof(MongoDBContext))
+            if (typeof(TContext) != typeof(MarkdownDBContext))
             {
                 throw new Exception("The context type must either derive from or be the MongoDBContext class.");
             }
 
             // Register DB context with DI container.
-            services.AddSingleton(contextType);
+            services.AddSingleton(typeof(TContext));
 
             // Configure user defined options.
             MongoDBOptions _mongoDBOptions = new MongoDBOptions();
             configureOptions?.Invoke(_mongoDBOptions);
 
-            // Inject to builder through DI container?
-            MongoDBContext _context = (MongoDBContext)Activator.CreateInstance(contextType);
-
             // Construct the context builder and run the initialization process.
             MongoDBContextBuilder<TContext>_builder = new MongoDBContextBuilder<TContext>(_mongoDBOptions);
+
             _builder.Run();
 
             return _builder;
         }
-
-        //public static MongoDBContextBuilder AddIndexes(this MongoDBContextBuilder builder)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public static MongoDBContextBuilder AddMappings(this MongoDBContextBuilder builder)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

@@ -4,20 +4,20 @@
 
 @inject HttpClient Client
 
-<h3>Users</h3>
+<div class="app-page">
+    <h3>Users</h3>
 
-<div class="mb-3">
-    <label for="txtAction" class="form-label">Action</label>
-    <input type="text" class="form-control" id="txtAction" @bind-value="this.QueryOptions.Action" />
-</div>
+    <div class="mb-3">
+        <label for="txtAction" class="form-label">Action</label>
+        <input type="text" class="form-control" id="txtAction" @bind-value="this.QueryOptions.Action" />
+    </div>
 
-<div class="mb-3">
-    <button type="button" class="btn btn-primary" @onclick="this.QueryUsers">Search</button>
-</div>
+    <div class="mb-3">
+        <button type="button" class="btn btn-primary" @onclick="this.QueryUsers">Search</button>
+    </div>
 
-<div class="card shadow">
     <div class="table-responsive">
-        <table class="table align-middle m-0">
+        <table>
             <thead class="thead-light">
                 <tr>
                     <th>Name</th>

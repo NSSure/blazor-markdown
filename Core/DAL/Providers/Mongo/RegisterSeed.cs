@@ -5,7 +5,7 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 {
     public interface IRegisterSeed
     {
-        public void Execute(MongoDBContext context);
+        public void Execute(MarkdownDBContext context);
     }
 
     public abstract class RegisterSeed<TDocument> : IRegisterSeed
@@ -15,11 +15,11 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo
 
         }
 
-        public void Execute(MongoDBContext context)
+        public void Execute(MarkdownDBContext context)
         {
             this.Configure(context);
         }
 
-        public abstract void Configure(MongoDBContext context);
+        public abstract void Configure(MarkdownDBContext context);
     }
 }

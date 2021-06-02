@@ -28,10 +28,12 @@ namespace Blazor.Markdown.Core.Mediator.Handler
             }
 
             // & operator is overloaded. Create filter and update definitions.
-            FilterDefinition<User> _filter = Builders<User>.Filter.Eq(x => x.Id, request.Options.UserId) & Builders<User>.Filter.Ne(x => x.Id, Guid.Empty);
-            UpdateDefinition<User> _update = Builders<User>.Update.Pull(x => x.ActionIds, request.Options.ActionId);
+            FilterDefinition<User> _filterDefinition = Builders<User>.Filter.Eq(x => x.Id, request.Options.UserId) & Builders<User>.Filter.Ne(x => x.Id, Guid.Empty);
+            UpdateDefinition<User> _updateDefinition = Builders<User>.Update.Pull(x => x.ActionIds, request.Options.ActionId);
 
-            UpdateResult _result = await this.UserRepository.Collection.UpdateOneAsync(_filter, _update);
+            UpdateResult _result = await this.UserRepository.Collection.UpdateOneAsync(_filterDefinition, _updateDefinition);
+
+            await this.UserRepository.UpdateFilterAsync(_filterDefinition, _updateDefinition);
 
             return new UserActionRemovalResponse()
             {
