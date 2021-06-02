@@ -28,7 +28,7 @@ namespace Blazor.Markdown.Core.Mediator.Handler
 
             FilterDefinitionBuilder<User> _filterBuilder = Builders<User>.Filter;
 
-            if(request.QueryOptions == null)
+            if (request.QueryOptions == null)
             {
                 request.QueryOptions = new UserQueryOptions();
             }
@@ -39,8 +39,14 @@ namespace Blazor.Markdown.Core.Mediator.Handler
                 _filter = _filterBuilder.AnyEq(_actionIdsField, request.QueryOptions.Action);
             }
 
+            SortDefinition<User> _sortDefinition = Builders<User>.Sort.Ascending(nameof(User.Name));
+
             // TODO: Is this the best practice for converting cursors into lists?
-            List<User> _users = await (await this.UserRepository.Collection.FindAsync(_filter)).ToListAsync();
+            List<User> _users = await (await this.UserRepository.Collection.FindAsync(_filter, new FindOptions<User, User>()
+            {
+                Sort = _sortDefinition
+            }))
+            .ToListAsync();
 
             return new UserQueryResponse()
             {
@@ -51,7 +57,7 @@ namespace Blazor.Markdown.Core.Mediator.Handler
                     Email = a.Email,
                     Address = a.Address,
                     Language = a.Language,
-                    IPAddress = a.IPAdress,
+                    IPAddress = a.IPAddress,
                     RoleIds = a.RoleIds,
                     ActionIds = a.ActionIds,
                     DateAdded = a.DateAdded,
