@@ -1,5 +1,8 @@
 ﻿using Blazor.Markdown.Core.DAL.Entity;
 using Blazor.Markdown.Core.DAL.Providers.Mongo;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
 namespace Blazor.Markdown.Core.DAL.Mongo
@@ -35,6 +38,14 @@ namespace Blazor.Markdown.Core.DAL.Mongo
             get
             {
                 return this.Database.GetCollection<Role>(typeof(Role).Name);
+            }
+        }
+
+        public IMongoCollection<Diagram> Diagram
+        {
+            get
+            {
+                return this.Database.GetCollection<Diagram>(typeof(Diagram).Name);
             }
         }
 

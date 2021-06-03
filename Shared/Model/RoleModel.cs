@@ -1,16 +1,14 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Blazor.Markdown.Core.DAL.Entity
+namespace Blazor.Markdown.Shared.Model
 {
-    public class Role
+    public class RoleModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Key { get; set; }
-        public string[] ActionKeys { get; set; }
+        public List<ActionModel> Actions { get; set; } = new List<ActionModel>();
         public DateTime DateAdded { get; set; }
     }
 }

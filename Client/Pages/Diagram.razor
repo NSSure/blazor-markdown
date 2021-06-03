@@ -1,0 +1,113 @@
+﻿@page "/diagram"
+
+@inject HttpClient Client
+@inject IJSRuntime JSRuntime
+
+@using Blazor.Markdown.Shared.Model.Returns
+
+<div class="app-page-diagram flex-fill d-flex">
+    <div id="diagram-container" class="flex-fill">
+        <canvas id="diagram-canvas"></canvas>
+        <div class="ribbon shadow-sm">
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <span class="oi oi-plus" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+    <div class="diagram-toolbar">
+        <div class="diagram-properties">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="2">Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>X</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Y</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Width</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Height</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public DiagramFetchResponse DiagramModel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.DiagramModel = await this.Client.GetFromJsonAsync<DiagramFetchResponse>("api/diagram/get");
+        await this.JSRuntime.InvokeVoidAsync("markdownApp.configureDiagram", this.DiagramModel);
+    }
+}
+
+<style>
+    #diagram-container {
+        position: relative;
+    }
+
+    .diagram-toolbar {
+        width: 250px;
+        background-color: #eeeeee;
+    }
+
+    .ribbon {
+        position: absolute;
+        bottom: 60px;
+        width: 300px;
+        left: calc(50% - 150px);
+        margin: 0 auto;
+        background: white;
+        border-radius: 5px;
+    }
+
+    .diagram-properties table tbody tr td {
+        width: 50%;
+        background-color: #ffffff;
+    }
+
+    .diagram-properties table tbody tr td:first-child {
+        border-left: none;
+    }
+
+        .diagram-properties table tbody tr td:last-child {
+            border-right: none;
+        }
+
+        .diagram-properties table tbody tr:last-child td {
+            border-bottom: none;
+        }
+</style>

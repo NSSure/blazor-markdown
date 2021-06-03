@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Blazor.Markdown.Core.DAL.Entity
+namespace Blazor.Markdown.Shared.Model
 {
-    public class Action
+    public class ActionModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Key { get; set; }
-        public List<Guid> RoleIds { get; set; }
         public DateTime DateAdded { get; set; }
     }
 }
