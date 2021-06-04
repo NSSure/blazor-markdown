@@ -1,15 +1,13 @@
-﻿using Blazor.Markdown.Shared.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Blazor.Markdown.Core.DAL.Entity
+namespace Blazor.Markdown.Shared.Model
 {
-    public class Diagram
+    public class DiagramModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public List<string> Tags { get; set; }
-        public List<Component> Components { get; set; }
+        public List<string> Tags { get; set; } = new List<string>();
         public DateTime DateAdded { get; set; }
         public DateTime DateLastUpdated { get; set; }
     }

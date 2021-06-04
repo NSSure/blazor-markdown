@@ -1,0 +1,49 @@
+﻿@page "/diagrams"
+
+@inject HttpClient Client
+@inject IJSRuntime JSRuntime
+
+@using Blazor.Markdown.Shared.Model
+
+<div class="app-page">
+    @if (this.DiagramModels != null)
+    {
+        <div class="row row-cols-1 row-cols-md-6 g-4">
+            @foreach (DiagramModel diagramModel in this.DiagramModels)
+            {
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@diagramModel.Name</h5>
+
+                            @if (diagramModel.Tags != null && diagramModel.Tags.Count > 0)
+                            {
+                                <div class="tags">
+                                    @foreach (string tag in diagramModel.Tags)
+                                    {
+                                        <div class="badge bg-primary outline mr-2">@tag</div>
+                                    }
+                                </div>
+                            }
+
+                            <div class="card-text mb-3">
+                                <small class="text-muted">@diagramModel.DateAdded</small>
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-sm w-100">Open Diagram</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    public List<DiagramModel> DiagramModels { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.DiagramModels = await this.Client.GetFromJsonAsync<List<DiagramModel>>("api/diagram/list");
+    }
+}

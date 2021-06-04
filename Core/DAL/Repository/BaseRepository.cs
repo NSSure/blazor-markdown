@@ -166,9 +166,37 @@ namespace Blazor.Markdown.Core.DAL.Repository
         /// List all of the documents with the collection.
         /// </summary>
         /// <returns>All of the documents within the collection.</returns>
-        public async Task<List<TDocument>> ListAll()
+        public async Task<List<TDocument>> ListAll(FindOptions findOptions = null)
         {
-            return await this.Collection.Find(new BsonDocument()).ToListAsync();
+            return await this.Collection.Find(new BsonDocument(), options: findOptions).ToListAsync();
+        }
+
+        /// <summary>
+        /// Lists all of the documents within the collection and applies a projection using a projection definition.
+        /// </summary>
+        /// 
+        /// <typeparam name="TProjection">The type of the projection return.</typeparam>
+        /// 
+        /// <param name="projectionDefinition">The project definition that contains the field to include/exclude in the final project.</param>
+        /// <param name="findOptions">Options for the find statement.</param>
+        /// <returns></returns>
+        public async Task<List<TProjection>> ListAll<TProjection>(ProjectionDefinition<TDocument, TProjection> projectionDefinition, FindOptions findOptions = null)
+        {
+            return await this.Collection.Find(new BsonDocument(), options: findOptions).Project(projectionDefinition).ToListAsync();
+        }
+
+        /// <summary>
+        /// Lists all of the documents within the collection and applies a projection using a project expression.
+        /// </summary>
+        /// 
+        /// <typeparam name="TProjection">The type of the projection return.</typeparam>
+        /// 
+        /// <param name="projectionExpression">The project expression that contains the field to include/exclude in the final project.</param>
+        /// <param name="findOptions">Options for the find statement.</param>
+        /// <returns></returns>
+        public async Task<List<TProjection>> ListAll<TProjection>(Expression<Func<TDocument, TProjection>> projectionExpression, FindOptions findOptions = null)
+        {
+            return await this.Collection.Find(new BsonDocument()).Project(projectionExpression).ToListAsync();
         }
 
         /// <summary>
