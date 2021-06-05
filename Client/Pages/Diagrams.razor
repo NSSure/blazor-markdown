@@ -1,11 +1,21 @@
 ﻿@page "/diagrams"
 
+@inject NavigationManager NavigationManager
 @inject HttpClient Client
 @inject IJSRuntime JSRuntime
 
 @using Blazor.Markdown.Shared.Model
 
+<style>
+    .page-title {
+        font-size: 24px;
+        margin-bottom: 25px;
+    }
+</style>
+
 <div class="app-page">
+    <div class="page-title">My Diagrams</div>
+
     @if (this.DiagramModels != null)
     {
         <div class="row row-cols-1 row-cols-md-6 g-4">
@@ -30,7 +40,7 @@
                                 <small class="text-muted">@diagramModel.DateAdded</small>
                             </div>
 
-                            <button type="button" class="btn btn-primary btn-sm w-100">Open Diagram</button>
+                            <button type="button" class="btn btn-primary btn-sm w-100" @onclick="this.GoToDiagram">Open Diagram</button>
                         </div>
                     </div>
                 </div>
@@ -45,5 +55,10 @@
     protected override async Task OnInitializedAsync()
     {
         this.DiagramModels = await this.Client.GetFromJsonAsync<List<DiagramModel>>("api/diagram/list");
+    }
+
+    protected void GoToDiagram()
+    {
+        this.NavigationManager.NavigateTo("/diagram");
     }
 }

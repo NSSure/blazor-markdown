@@ -13,6 +13,10 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
         {
             foreach (int diagramNumber in Enumerable.Range(1, 20))
             {
+                Guid _component1Id = Guid.NewGuid();
+                Guid _component2Id = Guid.NewGuid();
+                Guid _component3Id = Guid.NewGuid();
+
                 context.Diagram.InsertOne(new Diagram()
                 {
                     Name = $"Diagram {diagramNumber}",
@@ -22,37 +26,71 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
                     },
                     Components = new List<Component>()
                     {
-                    new Component()
-                    {
-                        Position = new Position()
+                        new Component()
                         {
-                            X = 100,
-                            Y = 100,
-                            Width = 100,
-                            Height = 200
+                            Id = _component1Id,
+                            Position = new Position()
+                            {
+                                X = 100,
+                                Y = 100,
+                                Width = 200,
+                                Height = 100
+                            },
+                            Material = new Material()
+                            {
+                                Color = "#ffffff",
+                                BackgroundColor = "#007ACC"
+                            },
+                            Connections = new List<Connection>()
+                            {
+                                new Connection()
+                                {
+                                    ComponentId = _component2Id,
+                                    SourceCardinal = CardinalDirection.Right,
+                                    TargetCardinal = CardinalDirection.Top
+                                },
+                                new Connection()
+                                {
+                                    ComponentId = _component3Id,
+                                    SourceCardinal = CardinalDirection.Bottom,
+                                    TargetCardinal = CardinalDirection.Top
+                                }
+                            }
                         },
-                        Material = new Material()
+                        new Component()
                         {
-                            Color = "#ffffff",
-                            BackgroundColor = "#1ED760"
+
+                            Id = _component2Id,
+                            Position = new Position()
+                            {
+                                X = 400,
+                                Y = 300,
+                                Width = 200,
+                                Height = 100
+                            },
+                            Material = new Material()
+                            {
+                                Color = "#ffffff",
+                                BackgroundColor = "#007ACC"
+                            }
+                        },
+                        new Component()
+                        {
+                            Id = _component3Id,
+                            Position = new Position()
+                            {
+                                X = 100,
+                                Y = 400,
+                                Width = 200,
+                                Height = 100
+                            },
+                            Material = new Material()
+                            {
+                                Color = "#ffffff",
+                                BackgroundColor = "#007ACC"
+                            }
                         }
                     },
-                    new Component()
-                    {
-                        Position = new Position()
-                        {
-                            X = 300,
-                            Y = 300,
-                            Width = 100,
-                            Height = 200
-                        },
-                        Material = new Material()
-                        {
-                            Color = "#ffffff",
-                            BackgroundColor = "#1ED760"
-                        }
-                    }
-                },
                     DateAdded = DateTime.UtcNow
                 });
             }

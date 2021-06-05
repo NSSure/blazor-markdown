@@ -1,64 +1,253 @@
-﻿var markdownApp = {
-    context: null,
-    diagram: null,
-    container: null,
+﻿class MarkdownApp {
+    diagramEngine = null;
 
-    configureDiagram: (diagram) => {
-        markdownApp.diagram = diagram || { components: [] };
+    constructor() {
 
-        markdownApp.container = document.querySelector('#diagram-container');
+    }
 
-        if (markdownApp.container) {
-            let diagramCanvas = markdownApp.container.querySelector('#diagram-canvas');
-
-            if (diagramCanvas) {
-                markdownApp.context = diagramCanvas.getContext('2d');
-
-                markdownApp.context.canvas.width = markdownApp.container.clientWidth;
-                markdownApp.context.canvas.height = markdownApp.container.clientHeight;
-
-                diagramCanvas.addEventListener('mousedown', (event) => {
-                    const rect = diagramCanvas.getBoundingClientRect()
-
-                    const x = event.clientX - rect.left;
-                    const y = event.clientY - rect.top;
-
-                    console.log(`x: ${x} // y: ${y}`);
-                });
-            }
-        }
-
-        window.requestAnimationFrame(markdownApp.draw);
-
-        window.addEventListener('resize', () => {
-            markdownApp.context.canvas.width = markdownApp.container.clientWidth;
-            markdownApp.context.canvas.height = markdownApp.container.clientHeight;
-        });
-    },
-
-    draw: (timestamp) => {
-        // Set context defaults.
-        markdownApp.context.fillStyle = '#dddddd';
-        markdownApp.context.fillRect(0, 0, markdownApp.container.clientWidth, markdownApp.container.clientHeight);
-
-        if (markdownApp.diagram.components) {
-            // Render components to context.
-            markdownApp.diagram.components.forEach((component) => {
-                markdownApp.context.fillStyle = component.material.backgroundColor;
-                markdownApp.context.fillRect(component.position.x, component.position.y, component.position.width, component.position.height);
-            });
-        }
-
-        window.requestAnimationFrame(markdownApp.draw);
+    createDiagramEngine = (diagram) => {
+        this.diagramEngine = new DiagramEngine();
+        this.diagramEngine.init(diagram);
     }
 }
 
-class MarkdownApp {
-
-}
-
 class DiagramEngine {
+    /**
+     * The selector to target the parent element of the diagram canvas.
+     */
+    containerSelector = '#diagram-container';
 
+    /**
+     * The parent element of the diagram canvas.
+     */
+    container = null;
+
+    /**
+     * The canvas element to draw the diagram components to.
+     */
+    canvas = null;
+
+    /**
+     * The 2D context of the diagram canvas.
+     */
+    context = null;
+
+    /**
+     * The diagram entity that contains the components to render.
+     */
+    diagram = null;
+
+    connectors = [];
+
+    options = {
+        canvasFill: '#f9f9f9'
+    };
+
+    cardinalDirection = {
+        left: 0,
+        top: 1,
+        right: 2,
+        bottom: 3
+    };
+
+    constructor() {
+
+    }
+
+    init = (diagram) => {
+        this.diagram = diagram || { components: [] };
+
+        // Query the container of the digram canvas for use in automatic resizing of the canvas and other actions.
+        this.container = document.querySelector(this.containerSelector);
+
+        if (!this.container) {
+            throw "Diagram canvas container does not exist.";
+        }
+
+        this.canvas = this.container.querySelector('#diagram-canvas');
+
+        if (!this.canvas) {
+            throw "Diagram engine canvas does not exist.";
+        }
+
+        // Get the 2d context for the diagram canvas.
+        this.context = this.canvas.getContext('2d');
+
+        this.registerCanvasEvents();
+
+        // Ensure that the canvas matches the dimensions on the parent element with the canvas is loaded.
+        this.resizeCanvas();
+
+        // Register the event to automatically resize the canvas when the window resizes.
+        window.addEventListener('resize', this.resizeCanvas);
+
+        // Start the draw loop.
+        window.requestAnimationFrame(this.draw);
+    }
+
+    /**
+     * Register any required events on the canvas element.
+     */
+    registerCanvasEvents = () => {
+        this.canvas.addEventListener('mousemove', (event) => {
+            const rect = this.canvas.getBoundingClientRect();
+
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            document.querySelector('.diagram-coordinates').textContent = `x: ${x} , y: ${y}`;
+        });
+    }
+
+    /**
+     * Draws the diagram components to the canvas context.
+     * @param {any} timestamp The time since the last draw loop iteration.
+     */
+    draw = (timestamp) => {
+        // Ensure we clear the context it draw iteration.
+        this.clear();
+
+        // Implement the engine defaults into the context.
+        this.context.fillStyle = this.options.canvasFill;
+        this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+
+        if (this.diagram.components) {
+            // Configure render fragments.
+            this.diagram.components.forEach((component) => {
+                // Configure the connections as fragments.
+                this.mapConnections(component);
+
+            });
+
+            // Render components to context.
+            this.diagram.components.forEach((component) => {
+                // Draw the component.
+                this.context.fillStyle = component.material.backgroundColor;
+                this.context.fillRect(component.position.x, component.position.y, component.position.width, component.position.height);
+
+                // Draw connectors.
+                this.drawConnections();
+            });
+        }
+
+        // Continue to the next draw loop iteration.
+        window.requestAnimationFrame(this.draw);
+    }
+
+    drawConnections = () => {
+        this.connectors.forEach((connector) => {
+
+            this.context.beginPath();
+
+            this.context.strokeStyle = 'red';
+            this.context.moveTo(connector.start.x, connector.start.y);
+            this.context.lineTo(connector.end.x, connector.end.y);
+
+            this.context.stroke();
+        });
+    }
+
+    computeConnectorCardinalPosition = (component, cardinalDirection) => {
+        let position = {};
+
+        switch (cardinalDirection) {
+            case this.cardinalDirection.left:
+                position.x = component.position.x;
+                position.y = component.position.y + (component.position.height / 2);
+                break;
+            case this.cardinalDirection.top:
+                position.x = comonent.position.x + (component.position.width / 2);
+                position.y = component.position.y;
+                break;
+            case this.cardinalDirection.right:
+                position.x = component.position.x + component.position.width;
+                position.y = component.position.y + (component.position.height / 2);
+                break;
+            case this.cardinalDirection.bottom:
+                position.x = component.position.x + (component.position.width / 2);
+                position.y = component.position.y + component.position.height;
+                break;
+        }
+
+        return position;
+    }
+
+    mapConnections = (sourceComponent) => {
+        if (sourceComponent.connections && sourceComponent.connections.length > 0) {
+            sourceComponent.connections.forEach((connection) => {
+                let targetComponent = this.diagram.components.find(x => x.id === connection.componentId);
+
+                let x1, y1, x2, y2, x3, y3, x4, y4;
+
+                switch (connection.sourceCardinal) {
+                    case this.cardinalDirection.left:
+                        break;
+                    case this.cardinalDirection.top:
+                        break;
+                    case this.cardinalDirection.right:
+                        break;
+                    case this.cardinalDirection.bottom:
+                        break;
+                }
+
+                if (connection.sourceCardinal === this.cardinalDirection.right && connection.targetCardinal === this.cardinalDirection.top) {
+                    let pos1 = this.computeConnectorCardinalPosition(sourceComponent, connection.sourceCardinal);
+
+                    x2 = targetComponent.position.x + (targetComponent.position.width / 2);
+                    y2 = sourceComponent.position.y + (sourceComponent.position.height / 2);
+
+                    x3 = x2;
+                    y3 = y2;
+
+                    x4 = targetComponent.position.x + (targetComponent.position.width / 2);
+                    y4 = targetComponent.position.y;
+
+                    this.connectors.push({
+                        start: {
+                            x: pos1.x,
+                            y: pos1.y
+                        },
+                        end: {
+                            x: x2,
+                            y: y2
+                        }
+                    });
+
+                    this.connectors.push({
+                        start: {
+                            x: x3,
+                            y: y3
+                        },
+                        end: {
+                            x: x4,
+                            y: y4
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    /**
+     * Clears the current canvas context and any fragments/connectors.
+     */
+    clear = () => {
+        this.connectors = [];
+        this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+    }
+
+    /**
+     * Resize the context canvas to match the size of the parent element.
+     */
+    resizeCanvas = () => {
+        this.context.canvas.width = this.container.clientWidth;
+        this.context.canvas.height = this.container.clientHeight;
+    }
 }
 
-window.markdownApp = markdownApp;
+/**
+ * When the DOM is loaded add the markdown app to the window.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    window.markdownApp = new MarkdownApp();
+})
