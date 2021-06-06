@@ -122,8 +122,13 @@ class DiagramEngine {
             // Render components to context.
             this.diagram.components.forEach((component) => {
                 // Draw the component.
-                this.context.fillStyle = component.material.backgroundColor;
+                this.context.fillStyle = '#DAE8FC';
                 this.context.fillRect(component.position.x, component.position.y, component.position.width, component.position.height);
+
+                this.context.beginPath();
+                this.context.strokeStyle = '#6C8EBF';
+                this.context.rect(component.position.x, component.position.y, component.position.width, component.position.height);
+                this.context.stroke();
 
                 // Draw connectors.
                 this.drawConnections();
@@ -242,6 +247,10 @@ class DiagramEngine {
     resizeCanvas = () => {
         this.context.canvas.width = this.container.clientWidth;
         this.context.canvas.height = this.container.clientHeight;
+    }
+
+    addComponent = (component) => {
+        this.diagram.components.push(component);
     }
 }
 

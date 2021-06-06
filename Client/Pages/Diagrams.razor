@@ -40,7 +40,7 @@
                                 <small class="text-muted">@diagramModel.DateAdded</small>
                             </div>
 
-                            <button type="button" class="btn btn-primary btn-sm w-100" @onclick="this.GoToDiagram">Open Diagram</button>
+                            <button type="button" class="btn btn-primary btn-sm w-100" @onclick="() => { this.GoToDiagram(diagramModel); }">Open Diagram</button>
                         </div>
                     </div>
                 </div>
@@ -57,8 +57,8 @@
         this.DiagramModels = await this.Client.GetFromJsonAsync<List<DiagramModel>>("api/diagram/list");
     }
 
-    protected void GoToDiagram()
+    protected void GoToDiagram(DiagramModel diagramModel)
     {
-        this.NavigationManager.NavigateTo("/diagram");
+        this.NavigationManager.NavigateTo($"/diagram/{diagramModel.Id}");
     }
 }

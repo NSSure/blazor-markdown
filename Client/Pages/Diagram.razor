@@ -1,8 +1,10 @@
-﻿@page "/diagram"
+﻿@page "/diagram/{diagramId}"
 
 @inject HttpClient Client
 @inject IJSRuntime JSRuntime
 
+@using Blazor.Markdown.Shared.Model
+@using Blazor.Markdown.Shared.Model.Options
 @using Blazor.Markdown.Shared.Model.Returns
 
 <style>
@@ -43,7 +45,7 @@
                 <button type="button" class="btn"><i class="fas fa-mouse-pointer"></i></button>
             </li>
             <li>
-                <button type="button" class="btn"><i class="fas fa-square"></i></button>
+                <button type="button" class="btn" @onclick="this.AddComponent"><i class="fas fa-square"></i></button>
             </li>
             <li>
                 <button type="button" class="btn"><i class="fas fa-trash"></i></button>
@@ -91,6 +93,9 @@
 </div>
 
 @code {
+    [Parameter]
+    public string DiagramId { get; set; }
+
     public string[] Shapes = new string[3]
     {
         "Square", "Triangle", "Circle"
@@ -100,8 +105,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        this.DiagramModel = await this.Client.GetFromJsonAsync<DiagramFetchResponse>("api/diagram/get");
+        this.DiagramModel = await this.Client.GetFromJsonAsync<DiagramFetchResponse>("api/diagram/get/" + this.DiagramId);
         await this.JSRuntime.InvokeVoidAsync("markdownApp.createDiagramEngine", this.DiagramModel);
+    }
+
+    protected async void AddComponent()
+    {
+        HttpResponseMessage _response = await this.Client.PostAsJsonAsync<ComponentCreationOptions>("api/diagram/component/add", new ComponentCreationOptions()
+        {
+            DiagramId = this.DiagramModel.Id,
+            Type = "rectangle"
+        });
+
+        Component _component = await _response.Content.ReadFromJsonAsync<Component>();
+
+        await this.JSRuntime.InvokeVoidAsync("markdownApp.diagramEngine.addComponent", _component);
+
     }
 }
 

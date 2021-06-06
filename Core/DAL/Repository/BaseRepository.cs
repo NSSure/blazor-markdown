@@ -200,6 +200,39 @@ namespace Blazor.Markdown.Core.DAL.Repository
         }
 
         /// <summary>
+        /// Gets a single document by the given expression.
+        /// </summary>
+        /// <param name="expression">The expression to get the document by.</param>
+        /// <param name="findOptions">Options for the find statement.</param>
+        /// <returns></returns>
+        public async Task<TDocument> Get(Expression<Func<TDocument, bool>> expression, FindOptions findOptions = null)
+        {
+            return await this.Collection.Find(expression, options: findOptions).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Gets a single document by the filter definition.
+        /// </summary>
+        /// <param name="filterDefinition">The filter definition to get the document by.</param>
+        /// <param name="findOptions">Options for the find statement.</param>
+        /// <returns></returns>
+        public async Task<TDocument> Get(FilterDefinition<TDocument> filterDefinition, FindOptions findOptions = null)
+        {
+            return await this.Collection.Find(filterDefinition, options: findOptions).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Gets a single document by the filter definition.
+        /// </summary>
+        /// <param name="filterDefinition">The filter definition to get the document by.</param>
+        /// <param name="findOptions">Options for the find statement.</param>
+        /// <returns></returns>
+        public async Task<TProjection> Get<TProjection>(FilterDefinition<TDocument> filterDefinition, Expression<Func<TDocument, TProjection>> projectionExpression, FindOptions findOptions = null)
+        {
+            return await this.Collection.Find(filterDefinition, options: findOptions).Project(projectionExpression).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// Adds an item to a field array using a filter definition and field definition.
         /// </summary>
         /// 
