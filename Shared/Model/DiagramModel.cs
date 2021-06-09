@@ -8,6 +8,7 @@ namespace Blazor.Markdown.Shared.Model
         public Guid Id { get; set; }
         public string Name { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
+        public List<Component> Components { get; set; } = new List<Component>();
         public DateTime DateAdded { get; set; }
         public DateTime DateLastUpdated { get; set; }
     }

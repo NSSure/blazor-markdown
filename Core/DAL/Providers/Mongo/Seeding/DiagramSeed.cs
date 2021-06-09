@@ -16,42 +16,35 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
                 Guid _component1Id = Guid.NewGuid();
                 Guid _component2Id = Guid.NewGuid();
                 Guid _component3Id = Guid.NewGuid();
+                Guid _component4Id = Guid.NewGuid();
+                Guid _component5Id = Guid.NewGuid();
+                Guid _component6Id = Guid.NewGuid();
 
                 context.Diagram.InsertOne(new Diagram()
                 {
-                    Name = $"Diagram {diagramNumber}",
+                    Name = "Lamp Troubleshooting",
                     Tags = new List<string>()
                     {
-                        "prototype", "internal", "documentation"
+                        "troubleshooting"
                     },
                     Components = new List<Component>()
                     {
                         new Component()
                         {
                             Id = _component1Id,
+
                             Position = new Position()
                             {
-                                X = 100,
-                                Y = 100,
+                                X = 400,
+                                Y = 400,
                                 Width = 200,
-                                Height = 100
-                            },
-                            Material = new Material()
-                            {
-                                Color = "#ffffff",
-                                BackgroundColor = "#007ACC"
+                                Height = 50
                             },
                             Connections = new List<Connection>()
                             {
                                 new Connection()
                                 {
                                     ComponentId = _component2Id,
-                                    SourceCardinal = CardinalDirection.Right,
-                                    TargetCardinal = CardinalDirection.Top
-                                },
-                                new Connection()
-                                {
-                                    ComponentId = _component3Id,
                                     SourceCardinal = CardinalDirection.Bottom,
                                     TargetCardinal = CardinalDirection.Top
                                 }
@@ -59,19 +52,28 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
                         },
                         new Component()
                         {
-
                             Id = _component2Id,
                             Position = new Position()
                             {
                                 X = 400,
-                                Y = 300,
+                                Y = 500,
                                 Width = 200,
-                                Height = 100
+                                Height = 50
                             },
-                            Material = new Material()
+                            Connections = new List<Connection>()
                             {
-                                Color = "#ffffff",
-                                BackgroundColor = "#007ACC"
+                                new Connection()
+                                {
+                                    ComponentId = _component3Id,
+                                    SourceCardinal = CardinalDirection.Right,
+                                    TargetCardinal = CardinalDirection.Left
+                                },
+                                new Connection()
+                                {
+                                    ComponentId = _component4Id,
+                                    SourceCardinal = CardinalDirection.Bottom,
+                                    TargetCardinal = CardinalDirection.Top
+                                }
                             }
                         },
                         new Component()
@@ -79,19 +81,63 @@ namespace Blazor.Markdown.Core.DAL.Providers.Mongo.Seeding
                             Id = _component3Id,
                             Position = new Position()
                             {
-                                X = 100,
-                                Y = 400,
+                                X = 700,
+                                Y = 500,
                                 Width = 200,
-                                Height = 100
-                            },
-                            Material = new Material()
-                            {
-                                Color = "#ffffff",
-                                BackgroundColor = "#007ACC"
+                                Height = 50
                             }
-                        }
+                        },
+                        new Component()
+                        {
+                            Id = _component4Id,
+                            Position = new Position()
+                            {
+                                X = 400,
+                                Y = 600,
+                                Width = 200,
+                                Height = 50
+                            },
+                            Connections = new List<Connection>()
+                            {
+                                new Connection()
+                                {
+                                    ComponentId = _component5Id,
+                                    SourceCardinal = CardinalDirection.Right,
+                                    TargetCardinal = CardinalDirection.Left
+                                },
+                                new Connection()
+                                {
+                                    ComponentId = _component6Id,
+                                    SourceCardinal = CardinalDirection.Bottom,
+                                    TargetCardinal = CardinalDirection.Top
+                                }
+                            }
+                        },
+                        new Component()
+                        {
+                            Id = _component5Id,
+                            Position = new Position()
+                            {
+                                X = 700,
+                                Y = 600,
+                                Width = 200,
+                                Height = 50
+                            }
+                        },
+                        new Component()
+                        {
+                            Id = _component6Id,
+                            Position = new Position()
+                            {
+                                X = 500, // Offset slightly right to test kinked lines.
+                                Y = 700,
+                                Width = 200,
+                                Height = 50
+                            }
+                        },
                     },
-                    DateAdded = DateTime.UtcNow
+                    DateAdded = DateTime.UtcNow,
+                    DateLastUpdated = DateTime.UtcNow
                 });
             }
         }

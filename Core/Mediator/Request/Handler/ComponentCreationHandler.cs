@@ -36,11 +36,6 @@ namespace Blazor.Markdown.Core.Mediator.Handler
                     Y = 500,
                     Width = 200,
                     Height = 100
-                },
-                Material = new Material()
-                {
-                    BackgroundColor = "#DAE8FC",
-                    Color = "#6C8EBF"
                 }
             };
 

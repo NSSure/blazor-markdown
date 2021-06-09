@@ -2,7 +2,6 @@
 {
     public class Material
     {
-        public string Color { get; set; }
-        public string BackgroundColor { get; set; }
+
     }
 }

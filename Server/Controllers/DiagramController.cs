@@ -1,6 +1,7 @@
 ﻿using Blazor.Markdown.Core.DAL.Entity;
 using Blazor.Markdown.Core.DAL.Repository;
 using Blazor.Markdown.Core.Mediator;
+using Blazor.Markdown.Core.Mediator.Query;
 using Blazor.Markdown.Core.Mediator.Request;
 using Blazor.Markdown.Shared.Model;
 using Blazor.Markdown.Shared.Model.Options;
@@ -61,11 +62,12 @@ namespace Blazor.Markdown.Server.Controllers
         {
             try
             {
-                DiagramModel _response = await this.Mediator.Send(new GetProjectionRequest<Diagram, DiagramModel, DiagramRepository>(a => a.Id == diagramId, x => new DiagramModel()
+                DiagramModel _response = await this.Mediator.Send(new GetDiagramQueryRequest(a => a.Id == diagramId, x => new DiagramModel()
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Tags = x.Tags,
+                    Components = x.Components,
                     DateAdded = x.DateAdded,
                     DateLastUpdated = x.DateLastUpdated
                 }));

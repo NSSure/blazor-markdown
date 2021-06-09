@@ -1,6 +1,12 @@
 using Blazor.Markdown.Core;
+using Blazor.Markdown.Core.DAL.Entity;
 using Blazor.Markdown.Core.DAL.Mongo;
+using Blazor.Markdown.Core.DAL.Repository;
+using Blazor.Markdown.Core.Mediator;
 using Blazor.Markdown.Core.Mediator.Behavior;
+using Blazor.Markdown.Core.Mediator.Handler;
+using Blazor.Markdown.Core.Mediator.Query;
+using Blazor.Markdown.Shared.Model;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +14,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace Blazor.Markdown.Server
 {
@@ -25,8 +34,9 @@ namespace Blazor.Markdown.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            
+
             services.AddMediatR(typeof(MarkdownApp));
+
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizeActionBehavior<,>));
 
             // Database will automatically be created if there are any indexes to apply.

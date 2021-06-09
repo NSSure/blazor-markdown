@@ -23,22 +23,6 @@ namespace Blazor.Markdown.Core.Mediator
         }
     }
 
-    public class GetProjectionRequestHandler<TDocument, TProjection, TRepository> : IRequestHandler<GetProjectionRequest<TDocument, TProjection, TRepository>, TProjection>
-    {
-        public readonly TRepository Repository;
-
-        public GetProjectionRequestHandler(TRepository repository)
-        {
-            this.Repository = repository;
-        }
-
-        public async Task<TProjection> Handle(GetProjectionRequest<TDocument, TProjection, TRepository> request, CancellationToken cancellationToken)
-        {
-            BaseRepository<TDocument> _repository = this.Repository as BaseRepository<TDocument>;
-            return await _repository.Get(request.Expression, request.Projection);
-        }
-    }
-
 
     public class GetRequest<TDocument, TResponse, TRepository> : IRequest<TResponse>
     {
@@ -50,7 +34,7 @@ namespace Blazor.Markdown.Core.Mediator
         }
     }
 
-    public class GetProjectionRequest<TDocument, TProjection, TRepository> : IRequest<TProjection>
+    public class GetProjectionRequest<TDocument, TProjection> : IRequest<TProjection>
     {
         public Expression<Func<TDocument, bool>> Expression { get; set; }
 
@@ -60,6 +44,22 @@ namespace Blazor.Markdown.Core.Mediator
         {
             this.Expression = expression;
             this.Projection = projection;
+        }
+    }
+
+    public class GetProjectionRequestHandler<TDocument, TProjection, TRepository> : IRequestHandler<GetProjectionRequest<TDocument, TProjection>, TProjection>
+    {
+        public readonly TRepository Repository;
+
+        public GetProjectionRequestHandler(TRepository repository)
+        {
+            this.Repository = repository;
+        }
+
+        public virtual async Task<TProjection> Handle(GetProjectionRequest<TDocument, TProjection> request, CancellationToken cancellationToken)
+        {
+            BaseRepository<TDocument> _repository = this.Repository as BaseRepository<TDocument>;
+            return await _repository.Get(request.Expression, request.Projection);
         }
     }
 }

@@ -122,11 +122,11 @@ class DiagramEngine {
             // Render components to context.
             this.diagram.components.forEach((component) => {
                 // Draw the component.
-                this.context.fillStyle = '#DAE8FC';
+                this.context.fillStyle = component.backgroundColor;
                 this.context.fillRect(component.position.x, component.position.y, component.position.width, component.position.height);
 
                 this.context.beginPath();
-                this.context.strokeStyle = '#6C8EBF';
+                this.context.strokeStyle = component.strokeColor;
                 this.context.rect(component.position.x, component.position.y, component.position.width, component.position.height);
                 this.context.stroke();
 
@@ -144,7 +144,9 @@ class DiagramEngine {
 
             this.context.beginPath();
 
-            this.context.strokeStyle = 'red';
+            this.context.lineCap = 'round';
+            this.context.strokeStyle = connector.strokeColor;
+            this.context.lineWidth = connector.thickness;
             this.context.moveTo(connector.start.x, connector.start.y);
             this.context.lineTo(connector.end.x, connector.end.y);
 
@@ -161,7 +163,7 @@ class DiagramEngine {
                 position.y = component.position.y + (component.position.height / 2);
                 break;
             case this.cardinalDirection.top:
-                position.x = comonent.position.x + (component.position.width / 2);
+                position.x = component.position.x + (component.position.width / 2);
                 position.y = component.position.y;
                 break;
             case this.cardinalDirection.right:
@@ -182,52 +184,21 @@ class DiagramEngine {
             sourceComponent.connections.forEach((connection) => {
                 let targetComponent = this.diagram.components.find(x => x.id === connection.componentId);
 
-                let x1, y1, x2, y2, x3, y3, x4, y4;
-
-                switch (connection.sourceCardinal) {
-                    case this.cardinalDirection.left:
-                        break;
-                    case this.cardinalDirection.top:
-                        break;
-                    case this.cardinalDirection.right:
-                        break;
-                    case this.cardinalDirection.bottom:
-                        break;
-                }
-
-                if (connection.sourceCardinal === this.cardinalDirection.right && connection.targetCardinal === this.cardinalDirection.top) {
-                    let pos1 = this.computeConnectorCardinalPosition(sourceComponent, connection.sourceCardinal);
-
-                    x2 = targetComponent.position.x + (targetComponent.position.width / 2);
-                    y2 = sourceComponent.position.y + (sourceComponent.position.height / 2);
-
-                    x3 = x2;
-                    y3 = y2;
-
-                    x4 = targetComponent.position.x + (targetComponent.position.width / 2);
-                    y4 = targetComponent.position.y;
+                if (targetComponent) {
+                    // computer x1, y1.
+                    let sourcePosition = this.computeConnectorCardinalPosition(sourceComponent, connection.sourceCardinal);
+                    let targetPosition = this.computeConnectorCardinalPosition(targetComponent, connection.targetCardinal);
 
                     this.connectors.push({
                         start: {
-                            x: pos1.x,
-                            y: pos1.y
+                            x: sourcePosition.x,
+                            y: sourcePosition.y
                         },
                         end: {
-                            x: x2,
-                            y: y2
+                            x: targetPosition.x,
+                            y: targetPosition.y
                         }
-                    });
-
-                    this.connectors.push({
-                        start: {
-                            x: x3,
-                            y: y3
-                        },
-                        end: {
-                            x: x4,
-                            y: y4
-                        }
-                    });
+                    })
                 }
             });
         }
@@ -251,6 +222,29 @@ class DiagramEngine {
 
     addComponent = (component) => {
         this.diagram.components.push(component);
+    }
+
+    setComponentProperty = (componentId, property, value) => {
+        let existingComponent = this.diagram.components.find(x => x.id === componentId);
+
+        if (existingComponent) {
+            var propertySegments = property.split('.');
+
+            if (propertySegments.length > 0) {
+                var ref;
+
+                propertySegments.forEach((propertySegment, index) => {
+                    if ((propertySegments.length - 1) !== index) {
+                        ref = existingComponent[propertySegment];
+                    }
+                });
+
+                ref[propertySegments[propertySegments.length - 1]] = value;
+            }
+            else {
+                existingComponent[propertySegments[0]] = value;
+            }
+        }
     }
 }
 
